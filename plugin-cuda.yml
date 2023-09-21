@@ -1,8 +1,28 @@
 ---
 - name: Install the Cuda Toolkit
   hosts: localhost
-  gather_facts: false
+  gather_facts: true
   tasks:
+
+    - name: Install required packages on Ubuntu and make sure Ansible is present and has the right version
+      when: ansible_distribution == 'Ubuntu'
+      block:
+        - name: Install the packages
+          when: ansible_distribution_major_version == "18"
+          package:
+            name:
+              - wget
+              - cron
+            state: present
+
+        - name: Install the packages
+          when: ansible_distribution_major_version == "20"
+          package:
+            name:
+              - wget
+              - crontab
+            state: present
+
     - name: Wait for system to become reachable
       wait_for_connection:
         timeout: 300
